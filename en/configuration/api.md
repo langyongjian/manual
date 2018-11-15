@@ -1,41 +1,52 @@
+---
+refcn: chapter_02/api
+refen: configuration/api
+---
+
 # API
 
-![English](../resources/englishc.svg) [![Chinese](../resources/chinese.svg)](https://www.v2ray.com/chapter_02/api.html)
+V2Ray provides some API for remote access. These APIs are based on [gRPC](https://grpc.io/).
 
-V2Ray 中可以开放一些 API 以便远程调用。这些 API 都基于 [gRPC](https://grpc.io/)。
+When API is enabled, V2Ray creates an outbound proxy automatically, tagged as `tag`. User must [route](routing.md) all gRPC connections to this outbound.
 
-当远程控制开启时，V2Ray 会自建一个传出代理，以`tag`配置的值为标识。用户必须手动将所有的 gRPC 传入连接通过[路由](03_routing.md)指向这一传出代理。
+## ApiObject
 
-配置如下：
+`ApiObject` is used as `api` field in top level configuration.
 
 ```javascript
 {
-    "tag": "api",
-    "services": [
-        "HandlerService",
-        "LoggerService"
-    ]
+  "tag": "api",
+  "services": [
+    "HandlerService",
+    "LoggerService",
+    "StatsService"
+  ]
 }
 ```
 
-其中：
+> `tag`: string
 
-* `tag`: 传出代理标识。
-* `services`: 开启的 API 列表。
+The tag of the outbound proxy.
 
-## 支持的 API 列表
+> `services`: \[ string \]
+
+List of enabled APIs.
+
+## Supported API list
 
 ### HandlerService
 
-一些对于传入传出代理进行修改的 API，可用的功能如下：
+API for manipulating inbound and outbound proxies. The following functionalities are provided:
 
-* 添加一个新的传入代理；
-* 添加一个新的传出代理；
-* 删除一个现有的传入代理；
-* 删除一个现有的传出代理；
-* 在一个传入代理中添加一个用户（仅支持 VMess）；
-* 在一个传入代理中删除一个用户（仅支持 VMess）；
+* Add a new inbound/outbound proxy.
+* Remove an existing inbound/outbound proxy.
+* Add a new user to an inbound proxy (VMess only).
+* Remove an existing user from an inbound proxy (VMess only).
 
 ### LoggerService
 
-* To restart internal logger. Can work with logrotate for operating log files.
+To restart internal logger. Can work with logrotate for operating log files.
+
+### StatsService
+
+Support for internal [Statistics](stats.md).

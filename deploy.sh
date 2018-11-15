@@ -2,16 +2,14 @@
 
 set -x
 
-curl -sL https://deb.nodesource.com/setup_7.x | bash -
-apt-get update
-apt-get -y install jq git file nodejs build-essential
+curl -sL https://deb.nodesource.com/setup_10.x | bash -
+apt -y install jq git file nodejs build-essential
 
 function build_dir {
   DIR="$1"
   pushd $DIR
   rsync -rv ../_layouts/ ./_layouts/
   rsync -rv ../resources/ ./resources/
-  cp ../donor.md ./donor.md
   gitbook init
   gitbook install
   gitbook build
@@ -24,16 +22,19 @@ function getattr() {
 
 GITHUB_TOKEN=$(getattr "github_token" "project")
 
-git clone https://github.com/v2ray/manual.git
+git clone --depth 5 https://github.com/v2ray/manual.git
 cd manual
 
 curl -o "./resources/github-release.svg" "https://img.shields.io/github/release/v2ray/v2ray-core.svg"
 
-npm install gitbook-cli -g
+npm install -g gitbook-cli
 
 build_dir zh_cn
 build_dir en
-build_dir eng_zh_cn
+build_dir ru
+build_dir ko
+build_dir fa
+build_dir vi
 
 TARGET_DIR=_v2ray_com
 
@@ -43,8 +44,14 @@ rm -rf ${TARGET_DIR}/*
 cp -r ./zh_cn/_book/* ${TARGET_DIR}/
 mkdir ${TARGET_DIR}/en/
 cp -r ./en/_book/* ${TARGET_DIR}/en/
-mkdir ${TARGET_DIR}/eng/
-cp -r ./eng_zh_cn/_book/* ${TARGET_DIR}/eng/
+mkdir ${TARGET_DIR}/ru/
+cp -r ./ru/_book/* ${TARGET_DIR}/ru/
+mkdir ${TARGET_DIR}/ko/
+cp -r ./ko/_book/* ${TARGET_DIR}/ko/
+mkdir ${TARGET_DIR}/fa/
+cp -r ./fa/_book/* ${TARGET_DIR}/fa/
+mkdir ${TARGET_DIR}/vi/
+cp -r ./vi/_book/* ${TARGET_DIR}/vi/
 cp -r ./_dev/* ${TARGET_DIR}/
 cp CNAME ${TARGET_DIR}/
 cp robots.txt ${TARGET_DIR}/
